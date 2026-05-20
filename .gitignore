@@ -1,0 +1,34 @@
+# OS
+.DS_Store
+Thumbs.db
+
+# Editor
+.vscode/
+.idea/
+
+# Runtime data
+memory.db
+*.db*
+*.sqlite
+*.pid
+
+# Secrets
+.env
+.env.*
+
+# Logs
+*.log
+logs/
+
+# Node
+node_modules/
+
+# Claude
+.claude/
+.claude-flow/
+
+# Swarm
+.swarm/
+
+# OpenCode
+.opencode/

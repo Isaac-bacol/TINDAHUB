@@ -1,0 +1,337 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>TindaHub – Fresh from Tagbilaran Palengke</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;500;600;700;800;900&family=Lora:ital,wght@0,600;0,700;1,600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="tindahub.css">
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+</head>
+<body>
+
+<!-- SPLASH -->
+<div id="splash" class="splash">
+  <div class="splash-inner">
+    <div class="splash-logo">
+      <svg width="64" height="64" viewBox="0 0 24 24" fill="none" stroke="rgba(255,255,255,.95)" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M6 2L3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"/><line x1="3" y1="6" x2="21" y2="6"/><path d="M16 10a4 4 0 0 1-8 0"/></svg>
+    </div>
+    <div class="splash-bars"><b></b><b></b><b></b><b></b><b></b></div>
+    <div class="splash-brand">TindaHub</div>
+    <div class="splash-sub">Fresh from the Tagbilaran Palengke</div>
+  </div>
+</div>
+
+<div id="wipe" class="wipe"></div>
+<div id="progressBar" class="progress-bar"></div>
+
+<!-- TOPBAR -->
+<header class="topbar" id="topbar">
+  <a class="logo" href="#">
+    <span class="logo-icon">
+      <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="var(--brand)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 2L3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"/><line x1="3" y1="6" x2="21" y2="6"/><path d="M16 10a4 4 0 0 1-8 0"/></svg>
+    </span>
+    <span class="logo-text">Tinda<strong>Hub</strong></span>
+  </a>
+  <nav class="top-nav">
+    <a class="tnav active" id="tnav-home"    onclick="switchPage('home',this)">Home</a>
+    <a class="tnav"        id="tnav-orders"  onclick="switchPage('orders',this)">Orders</a>
+    <a class="tnav"        id="tnav-chat"    onclick="switchPage('chat',this)">Chat</a>
+    <a class="tnav"        id="tnav-account" onclick="switchPage('account',this)">Account</a>
+  </nav>
+  <div class="topbar-search">
+    <svg class="ts-icon" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+    <input id="tbSearch" type="text" placeholder="Search stalls, products in Tagbilaran…"
+           oninput="liveSearch(this.value)" autocomplete="off" spellcheck="false">
+    <div id="searchDrop" class="search-drop"></div>
+  </div>
+  <div class="topbar-right">
+    <button class="tb-btn" id="darkToggle" title="Toggle Dark Mode" onclick="toggleDarkMode()">
+      <svg id="darkIcon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+    </button>
+    <button class="tb-btn" title="Deals" onclick="toast('Deals coming soon!')">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20.59 13.41l-7.17 7.17a2 2 0 0 1-2.83 0L2 12V2h10l8.59 8.59a2 2 0 0 1 0 2.82z"/><line x1="7" y1="7" x2="7.01" y2="7"/></svg>
+    </button>
+    <button class="tb-btn badge-wrap" title="Notifications" onclick="openNotifs()">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg>
+      <em class="badge" id="notifBadge">0</em>
+    </button>
+    <button class="tb-btn badge-wrap" title="Cart" id="cartBtn" onclick="openCart()">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="9" cy="21" r="1"/><circle cx="20" cy="21" r="1"/><path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"/></svg>
+      <em class="badge" id="cartBadge">0</em>
+    </button>
+    <div class="loc-chip" onclick="openLocationModal()">
+      <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
+      <span id="locLabel">Tagbilaran City</span> <span class="chev">▾</span>
+    </div>
+    <button class="avatar-btn" id="avatarBtn" onclick="switchPage('account',null)">
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+      <span id="avatarName">Guest</span>
+    </button>
+  </div>
+</header>
+
+<!-- SHELL -->
+<div class="shell">
+
+  <!-- SIDEBAR -->
+  <aside class="sidebar">
+    <nav class="sb-nav">
+      <a class="sb-item active" onclick="sbNav(this,'all')">
+        <svg class="sb-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
+        <span>Home</span>
+      </a>
+      <a class="sb-item" onclick="sbNav(this,'fresh')">
+        <svg class="sb-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2a10 10 0 0 1 10 10"/><path d="M12 8v4l3 3"/><circle cx="12" cy="12" r="1"/></svg>
+        <span>Fresh Picks Today</span>
+      </a>
+      <a class="sb-item" onclick="sbNav(this,'toprated')">
+        <svg class="sb-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+        <span>Top Rated Stalls</span>
+      </a>
+      <a class="sb-item" onclick="sbNav(this,'delivery')">
+        <svg class="sb-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="1" y="3" width="15" height="13"/><polygon points="16 8 20 8 23 11 23 16 16 16 16 8"/><circle cx="5.5" cy="18.5" r="2.5"/><circle cx="18.5" cy="18.5" r="2.5"/></svg>
+        <span>Fast Delivery</span>
+      </a>
+    </nav>
+    <div class="sb-rule"></div>
+    <p class="sb-label">Categories</p>
+    <nav class="sb-cats">
+      <a class="sb-cat" onclick="filterCat('Fish',null,this)">      <img class="sb-cat-img" src="https://cdn-icons-png.flaticon.com/128/811/811643.png" alt="Fish"><span>Fish</span>      <em>›</em></a>
+      <a class="sb-cat" onclick="filterCat('Vegetables',null,this)"><img class="sb-cat-img" src="https://cdn-icons-png.flaticon.com/128/2329/2329903.png" alt="Vegetables"><span>Vegetables</span><em>›</em></a>
+      <a class="sb-cat" onclick="filterCat('Rice',null,this)">      <img class="sb-cat-img" src="https://cdn-icons-png.flaticon.com/128/5990/5990421.png" alt="Rice"><span>Rice</span>      <em>›</em></a>
+      <a class="sb-cat" onclick="filterCat('Meat',null,this)">      <img class="sb-cat-img" src="https://cdn-icons-png.flaticon.com/128/933/933310.png" alt="Meat"><span>Meat</span>      <em>›</em></a>
+      <a class="sb-cat" onclick="filterCat('Eggs',null,this)">    <img class="sb-cat-img" src="https://cdn-icons-png.flaticon.com/128/2789/2789871.png" alt="Eggs"><span>Eggs</span>    <em>›</em></a>
+      <a class="sb-cat" onclick="filterCat('Kakanin',null,this)">   <img class="sb-cat-img" src="https://cdn-icons-png.flaticon.com/128/11835/11835056.png" alt="Kakanin"><span>Kakanin</span>   <em>›</em></a>
+    </nav>
+    <div class="sb-rule"></div>
+    <p class="sb-label">Tagbilaran Areas</p>
+    <nav class="sb-cats">
+      <a class="sb-cat" onclick="openNearbyMap()">
+        <svg class="sb-icon" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
+        <span>Near Me</span><em>›</em>
+      </a>
+      <a class="sb-cat" onclick="filterBarangay('Tagbilaran City Central Public Market')">
+        <svg class="sb-icon" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
+        <span>Tagbilaran City Central Public Markets</span><em>›</em>
+      </a>
+      <a class="sb-cat" onclick="filterBarangay('Cogon')">
+        <svg class="sb-icon" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="7" width="20" height="14" rx="2" ry="2"/><path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"/></svg>
+        <span>Cogon</span><em>›</em>
+      </a>
+      <a class="sb-cat" onclick="filterBarangay('Manga')">
+        <svg class="sb-icon" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="7" width="20" height="14" rx="2" ry="2"/><path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"/></svg>
+        <span>Manga</span><em>›</em>
+      </a>
+    </nav>
+    <div class="sb-promo">
+      <div class="sbp-body">
+        <p class="sbp-title">🛒 Order Fresh<br><strong>Pasalubong</strong><br>for Your Neighbor</p>
+        <button class="sbp-btn" onclick="openCart()">Order Now »</button>
+      </div>
+    </div>
+    <p class="sb-foot">👥 Support: Local Tagbilaran Palengke</p>
+  </aside>
+
+  <!-- PAGES WRAPPER -->
+  <div class="pages-wrap" id="pagesWrap">
+
+    <!-- HOME PAGE -->
+    <main class="feed page-view active" id="page-home">
+      <div class="hero" id="hero">
+        <div class="hero-text">
+          <h2 id="heroTitle">Good morning! What do you need from palengke today?</h2>
+          <div class="hero-search">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="rgba(255,255,255,.75)" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+            <input type="text" placeholder="Search nearest stalls in Tagbilaran…" oninput="liveSearch(this.value)">
+            <button class="mic-btn" title="Voice search" onclick="toast('Voice search coming soon!')">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="rgba(255,255,255,.75)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z"/><path d="M19 10v2a7 7 0 0 1-14 0v-2"/><line x1="12" y1="19" x2="12" y2="23"/><line x1="8" y1="23" x2="16" y2="23"/></svg>
+            </button>
+          </div>
+        </div>
+        <div class="hero-stats">
+          <div class="hstat"><span class="hstat-val" id="sStalls">—</span><span class="hstat-lbl">Stalls</span></div>
+          <div class="hstat"><span class="hstat-val" id="sProducts">—</span><span class="hstat-lbl">Products</span></div>
+          <div class="hstat">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="rgba(255,255,255,.9)" stroke="none"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>
+            <span class="hstat-lbl">Fast Delivery</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="pill-row" id="pillRow">
+        <div class="pill active" data-cat="all"        onclick="filterCat('all',this)">Top Rated</div>
+        <div class="pill"        data-cat="Fish"       onclick="filterCat('Fish',this)"><img class="pill-img" src="https://cdn-icons-png.flaticon.com/128/811/811643.png" alt="">Fish</div>
+        <div class="pill"        data-cat="Vegetables" onclick="filterCat('Vegetables',this)"><img class="pill-img" src="https://cdn-icons-png.flaticon.com/128/2329/2329903.png" alt="">Vegetables</div>
+        <div class="pill"        data-cat="Rice"       onclick="filterCat('Rice',this)"><img class="pill-img" src="https://cdn-icons-png.flaticon.com/128/5990/5990421.png" alt="">Rice</div>
+        <div class="pill"        data-cat="Meat"       onclick="filterCat('Meat',this)"><img class="pill-img" src="https://cdn-icons-png.flaticon.com/128/933/933310.png" alt="">Meat</div>
+        <div class="pill"        data-cat="Eggs"     onclick="filterCat('Eggs',this)"><img class="pill-img" src="https://cdn-icons-png.flaticon.com/128/2789/2789871.png" alt="">Eggs</div>
+        <div class="pill"        data-cat="Kakanin"    onclick="filterCat('Kakanin',this)"><img class="pill-img" src="https://cdn-icons-png.flaticon.com/128/11835/11835056.png" alt="">Kakanin</div>
+        <div class="pill pill-more" onclick="showAllProducts()">See All ›</div>
+      </div>
+
+      <div class="sec-head">
+        <h3 class="sec-title">Fresh Picks Today</h3>
+        <a class="sec-more" onclick="showAllProducts()">See All ›</a>
+      </div>
+      <div class="fresh-grid" id="freshGrid">
+        <div class="skeleton sk-card"></div>
+        <div class="skeleton sk-card"></div>
+      </div>
+
+      <div class="sec-head" style="margin-top:4px">
+        <h3 class="sec-title">Fast Delivery within Tagbilaran</h3>
+        <a class="sec-more" onclick="showAllProducts()">See All ›</a>
+      </div>
+      <div class="delivery-grid" id="deliveryGrid">
+        <div class="skeleton sk-row"></div>
+        <div class="skeleton sk-row"></div>
+        <div class="skeleton sk-row"></div>
+        <div class="skeleton sk-row"></div>
+      </div>
+
+      <div id="allSection" style="display:none">
+        <div class="sec-head" style="margin-top:4px">
+          <h3 class="sec-title" id="allTitle">All Products</h3>
+          <span id="allCount" class="sec-count"></span>
+        </div>
+        <div class="all-grid" id="allGrid"></div>
+      </div>
+    </main>
+
+    <!-- ORDERS PAGE -->
+    <main class="feed page-view" id="page-orders">
+      <div id="ordersContent"></div>
+    </main>
+
+    <!-- CHAT PAGE -->
+    <main class="feed page-view" id="page-chat">
+      <div id="chatContent" style="height:100%"></div>
+    </main>
+
+    <!-- ACCOUNT PAGE -->
+    <main class="feed page-view" id="page-account">
+      <div id="accountContent"></div>
+    </main>
+
+  </div><!-- /pages-wrap -->
+
+  <!-- RIGHT PANEL -->
+  <aside class="right-panel" id="rightPanel">
+    <div id="rpContent">
+      <div class="rp-skeleton">
+        <div class="skeleton" style="height:185px;border-radius:14px"></div>
+        <div class="skeleton" style="height:22px;width:60%;margin-top:12px"></div>
+        <div class="skeleton" style="height:30px;width:45%;margin-top:8px"></div>
+        <div class="skeleton" style="height:60px;margin-top:10px"></div>
+        <div class="skeleton" style="height:74px;margin-top:8px"></div>
+        <div class="skeleton" style="height:44px;margin-top:8px"></div>
+      </div>
+    </div>
+  </aside>
+
+</div><!-- /shell -->
+
+<!-- TICKER -->
+<div class="ticker"><div class="ticker-track" id="tickerTrack"></div></div>
+
+<!-- CART SLIDE-OVER -->
+<div class="so-bg" id="cartBg" onclick="closeCart()"></div>
+<div class="slideover" id="cartPanel">
+  <div class="so-head">
+    <h3>🛒 My Cart</h3>
+    <button class="so-close" onclick="closeCart()">✕</button>
+  </div>
+  <div class="so-body" id="cartBody">
+    <div class="empty-state"><span>🛒</span><p>Your cart is empty</p></div>
+  </div>
+  <div class="so-foot" id="cartFoot" style="display:none">
+    <div class="cart-summary">
+      <span>Subtotal</span>
+      <strong id="cartTotal">₱0.00</strong>
+    </div>
+    <button class="btn-co" onclick="openCheckout()">Proceed to Checkout ›</button>
+  </div>
+</div>
+
+<!-- NOTIFICATIONS SLIDE-OVER -->
+<div class="so-bg" id="notifBg" onclick="closeNotifs()"></div>
+<div class="slideover" id="notifPanel">
+  <div class="so-head">
+    <h3>🔔 Notifications</h3>
+    <button class="so-close" onclick="closeNotifs()">✕</button>
+  </div>
+  <div class="so-body" id="notifBody"></div>
+</div>
+
+<!-- NEARBY MAP MODAL -->
+<div class="modal-bg" id="mapBg" onclick="closeNearbyMap()"></div>
+<div class="modal-box modal-xl" id="mapModal">
+  <div class="mb-head">
+    <h3>📍 Markets Near You — Tagbilaran City</h3>
+    <button class="so-close" onclick="closeNearbyMap()">✕</button>
+  </div>
+  <div id="mapBody"></div>
+</div>
+
+<!-- LOGIN MODAL -->
+<div class="modal-bg" id="loginBg" onclick="closeLogin()"></div>
+<div class="modal-box" id="loginModal">
+  <div class="mb-head">
+    <div class="mb-logo">🧺 TindaHub</div>
+    <button class="so-close" onclick="closeLogin()">✕</button>
+  </div>
+  <div class="mb-tabs">
+    <button class="mb-tab active" id="tabLogin" onclick="switchAuthTab('login')">Login</button>
+    <button class="mb-tab" id="tabReg"   onclick="switchAuthTab('register')">Register</button>
+  </div>
+  <div id="authAlert" class="auth-alert" style="display:none"></div>
+  <div id="loginForm" class="mb-body">
+    <div class="field"><label>Email</label>
+      <input type="email" id="li_email" placeholder="you@email.com"></div>
+    <div class="field"><label>Password</label>
+      <input type="password" id="li_pass" placeholder="Your password"></div>
+    <button class="btn-auth" id="loginBtn" onclick="doLogin()">Login to TindaHub</button>
+    <p class="auth-hint">Create an account or login with your existing credentials</p>
+  </div>
+  <div id="registerForm" class="mb-body" style="display:none">
+    <div class="role-pick">
+      <div class="rp-opt selected" id="rp_buyer"  onclick="setRole('buyer')"><span>🛒</span><strong>Buyer</strong><small>I want to buy</small></div>
+      <div class="rp-opt"          id="rp_seller" onclick="setRole('seller')"><span>🏪</span><strong>Seller</strong><small>I want to sell</small></div>
+    </div>
+    <input type="hidden" id="reg_role" value="buyer">
+    <div class="field"><label>Full Name *</label><input type="text" id="reg_name" placeholder="Maria Santos"></div>
+    <div class="field"><label>Email *</label><input type="email" id="reg_email" placeholder="you@email.com"></div>
+    <div class="field"><label>Phone</label><input type="text" id="reg_phone" placeholder="09XXXXXXXXX"></div>
+    <div class="field"><label>Password * <small>(min 6 chars)</small></label><input type="password" id="reg_pass" placeholder="Create a password"></div>
+    <div class="field"><label>Confirm Password *</label><input type="password" id="reg_conf" placeholder="Repeat password"></div>
+    <button class="btn-auth" id="regBtn" onclick="doRegister()">Create Account</button>
+  </div>
+</div>
+
+<!-- CHECKOUT MODAL -->
+<div class="modal-bg" id="coBg" onclick="closeCheckout()"></div>
+<div class="modal-box modal-lg" id="coModal">
+  <div class="mb-head">
+    <h3>📋 Checkout</h3>
+    <button class="so-close" onclick="closeCheckout()">✕</button>
+  </div>
+  <div class="mb-body" id="coBody"></div>
+</div>
+
+<!-- LOCATION MODAL -->
+<div class="modal-bg" id="locBg" onclick="closeLocationModal()"></div>
+<div class="modal-box" id="locModal">
+  <div class="mb-head"><h3>📍 Change Location</h3>
+    <button class="so-close" onclick="closeLocationModal()">✕</button>
+  </div>
+  <div class="mb-body" id="locBody"></div>
+</div>
+
+<div id="toast" class="toast"></div>
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.39.0/dist/umd/supabase.min.js"></script>
+<script src="tindahub.js"></script>
+</body>
+</html>
