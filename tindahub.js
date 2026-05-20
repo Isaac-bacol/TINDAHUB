@@ -1004,7 +1004,11 @@ function renderOrderCard(o, idx) {
 }
 
 function renderChatPage() {
-  document.getElementById('chatContent').innerHTML = '';
+  document.getElementById('chatContent').innerHTML =
+    '<div style="display:flex;flex-direction:column;align-items:center;justify-content:center;height:100%;text-align:center;padding:40px;color:var(--text-muted)">' +
+    '<span style="font-size:48px;margin-bottom:12px">\ud83d\udcac</span>' +
+    '<h3 style="font-family:Lora,serif;font-size:18px;color:var(--text-primary);margin-bottom:6px">Chat</h3>' +
+    '<p style="font-size:14px;font-weight:600">This feature is coming soon, stay lang mo mga dawg!</p></div>';
 }
 
 async function loadConversations() {
