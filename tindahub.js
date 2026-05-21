@@ -770,7 +770,10 @@ async function placeOrder() {
       var uid = session && session.data && session.data.session ? session.data.session.user.id : null;
       if (!uid) { donePlacing(btn); toast('Please login first.'); return; }
       var result = await sb().from('orders').insert({
-        user_id: uid, stall_id: stallId, mode: deliveryMode,
+        user_id: uid,
+        buyer_name: (userProfile && userProfile.full_name) || (user && user.email) || 'Unknown',
+        buyer_email: (user && user.email) || null,
+        stall_id: stallId, mode: deliveryMode,
         delivery_address: addr || null, notes: notes || null,
         total: total, status: 'placed', track_step: 1
       }).select('id').single();
