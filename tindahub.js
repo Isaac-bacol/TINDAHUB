@@ -783,7 +783,9 @@ async function placeOrder() {
           orderItems.push({
             order_id: result.data.id, product_id: cartItems[j].product_id,
             product_name: cartItems[j].product_name,
-            quantity: cartItems[j].quantity, price: cartItems[j].price
+            quantity: cartItems[j].quantity, price: cartItems[j].price,
+            buyer_name: (userProfile && userProfile.full_name) || (user && user.email) || 'Unknown',
+            buyer_email: (user && user.email) || null
           });
         }
         try { await sb().from('order_items').insert(orderItems); } catch (e) { console.warn('order_items insert failed:', e); }
